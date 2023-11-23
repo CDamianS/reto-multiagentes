@@ -362,97 +362,43 @@ banqueta = [
 ]
 
 semaforosV = [
-    (4, 3),
-    (5, 3),
-    (6, 3),
     (7, 3),
     (8, 3),
     (4, 9),
     (5, 9),
-    (6, 9),
-    (7, 9),
-    (8, 9),
-    (4, 21),
-    (5, 21),
-    (6, 21),
     (7, 21),
     (8, 21),
     (4, 27),
     (5, 27),
-    (6, 27),
-    (7, 27),
-    (8, 27),
-    (22, 3),
-    (23, 3),
-    (24, 3),
     (25, 3),
     (26, 3),
     (22, 9),
     (23, 9),
-    (24, 9),
-    (25, 9),
-    (26, 9),
-    (22, 21),
-    (23, 21),
-    (24, 21),
     (25, 21),
     (26, 21),
     (22, 27),
     (23, 27),
-    (24, 27),
-    (25, 27),
-    (26, 27),
 ]
 
 semaforosH = [
     (3, 4),
     (3, 5),
-    (3, 6),
-    (3, 7),
-    (3, 8),
-    (9, 4),
-    (9, 5),
-    (9, 6),
     (9, 7),
     (9, 8),
     (21, 4),
     (21, 5),
-    (21, 6),
-    (21, 7),
-    (21, 8),
-    (27, 4),
-    (27, 5),
-    (27, 6),
     (27, 7),
     (27, 8),
     (3, 22),
     (3, 23),
-    (3, 24),
-    (3, 25),
-    (3, 26),
-    (9, 22),
-    (9, 23),
-    (9, 24),
     (9, 25),
     (9, 26),
     (21, 22),
     (21, 23),
-    (21, 24),
-    (21, 25),
-    (21, 26),
-    (27, 22),
-    (27, 23),
-    (27, 24),
     (27, 25),
     (27, 26),
     (3, 13),
     (3, 14),
-    (3, 15),
-    (3, 16),
-    (3, 17),
-    (27, 13),
-    (27, 14),
-    (27, 15),
     (27, 16),
     (27, 17),
 ]
@@ -716,15 +662,15 @@ class CarModel(Model):
         o = 0
 
         # Djikstra
-        self.puntos_inicio = puntos_inicio_random
-        self.lineas_llegada = lineas_llegada_random
+        # self.puntos_inicio = puntos_inicio_random
+        # self.lineas_llegada = lineas_llegada_random
 
-        for punto, destino in zip(self.puntos_inicio, self.lineas_llegada):
-            x, y = punto
-            carro = CarAgent(o, model=self, pos=(x, y), destino=destino)
-            self.schedule.add(carro)
-            self.grid.place_agent(carro, (x, y))
-            o += 1
+        # for punto, destino in zip(self.puntos_inicio, self.lineas_llegada):
+        #     x, y = punto
+        #     carro = CarAgent(o, model=self, pos=(x, y), destino=destino)
+        #     self.schedule.add(carro)
+        #     self.grid.place_agent(carro, (x, y))
+        #     o += 1
 
         # Create the obstacles
         for i in edificios:
