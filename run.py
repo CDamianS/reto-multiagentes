@@ -1,12 +1,12 @@
 import mesa
-from mesa import Model
-from mesa import Agent
 
 # Data manipulation and analysis.
-from mapa import (
-    CarModel,
+from traffic_model import (
+    TrafficModel,
     obstaculoAgent,
-    banquetaAgent, semaforoVAgent
+    banquetaAgent,
+    PeatonAgent,
+    CarAgent,
 )
 
 
@@ -34,6 +34,12 @@ def agent_portrayal(agent):
         portrayal["h"] = 1
         portrayal["w"] = 1
         portrayal["Filled"] = True
+    if isinstance(agent, PeatonAgent):
+        portrayal["Shape"] = "circle"
+        portrayal["Color"] = "#FF79C6"
+        portrayal["Layer"] = 1
+        portrayal["r"] = 0.5
+        portrayal["Filled"] = True
 
     if isinstance(agent, banquetaAgent):
         portrayal["Shape"] = "rect"
@@ -42,15 +48,23 @@ def agent_portrayal(agent):
         portrayal["h"] = 1
         portrayal["w"] = 1
         portrayal["Filled"] = True
-
-    
+    if isinstance(agent, CarAgent):
+        portrayal["Shape"] = "rect"
+        portrayal["Color"] = "#F1FA8C"
+        portrayal["Layer"] = 1
+        portrayal["h"] = 1
+        portrayal["w"] = 1
+        portrayal["Filled"] = True
 
     return portrayal
 
 
 grid = mesa.visualization.CanvasGrid(agent_portrayal, 30, 30)
 server = mesa.visualization.ModularServer(
-    CarModel, [grid], "Car Model", {"width": 30, "height":30, "num_agents": 5}, 
+    TrafficModel,
+    [grid],
+    "Car Model",
+    {"width": 30, "height": 30, "num_agents": 5},
 )
 server.port = 8521  # the default
 server.launch()

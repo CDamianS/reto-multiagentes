@@ -359,6 +359,89 @@ banqueta = [
     (29, 21),
     (28, 27),
     (29, 27),
+    # Camellones horizontales
+    (0, 6),
+    (1, 6),
+    (2, 6),
+    (3, 6),
+    (9, 6),
+    (10, 6),
+    (11, 6),
+    (12, 6),
+    (13, 6),
+    (14, 6),
+    (15, 6),
+    (19, 6),
+    (20, 6),
+    (21, 6),
+    (27, 6),
+    (28, 6),
+    (29, 6),
+    (0, 24),
+    (1, 24),
+    (2, 24),
+    (3, 24),
+    (9, 24),
+    (10, 24),
+    (11, 24),
+    (12, 24),
+    (13, 24),
+    (17, 24),
+    (18, 24),
+    (19, 24),
+    (20, 24),
+    (21, 24),
+    (27, 24),
+    (28, 24),
+    (29, 24),
+    (0, 15),
+    (1, 15),
+    (2, 15),
+    (3, 15),
+    (27, 15),
+    (28, 15),
+    (29, 15),
+    # Camellones verticales
+    (6, 0),
+    (6, 1),
+    (6, 2),
+    (6, 3),
+    (6, 9),
+    (6, 10),
+    (6, 11),
+    (6, 12),
+    (6, 13),
+    (6, 14),
+    (6, 15),
+    (6, 16),
+    (6, 17),
+    (6, 18),
+    (6, 19),
+    (6, 20),
+    (6, 21),
+    (6, 27),
+    (6, 28),
+    (6, 29),
+    (24, 0),
+    (24, 1),
+    (24, 2),
+    (24, 3),
+    (24, 9),
+    (24, 10),
+    (24, 11),
+    (24, 12),
+    (24, 13),
+    (24, 14),
+    (24, 15),
+    (24, 16),
+    (24, 17),
+    (24, 18),
+    (24, 19),
+    (24, 20),
+    (24, 21),
+    (24, 27),
+    (24, 28),
+    (24, 29),
 ]
 
 semaforosV = [
@@ -467,14 +550,14 @@ puntos_llegada_autos = [
 puntos_peatones = [
     (3, 0),
     (9, 0),
-    (13, 0),
-    (17, 0),
+    (15, 0),
+    (19, 0),
     (21, 0),
     (27, 0),
     (3, 29),
     (9, 29),
-    (15, 29),
-    (19, 29),
+    (13, 29),
+    (17, 29),
     (21, 29),
     (27, 29),
     (0, 3),
@@ -495,14 +578,14 @@ grafo_peatones = {
     # Origins
     (3, 0): {(3, 3): 3},
     (9, 0): {(9, 3): 3},
-    (13, 0): {(13, 3): 3},
-    (17, 0): {(17, 3): 3},
+    (15, 0): {(15, 3): 3},
+    (19, 0): {(19, 3): 3},
     (21, 0): {(21, 3): 3},
     (27, 0): {(27, 3): 3},
     (3, 29): {(3, 27): 3},
     (9, 29): {(9, 27): 3},
-    (15, 29): {(15, 27): 3},
-    (19, 29): {(19, 27): 3},
+    (13, 29): {(13, 27): 3},
+    (17, 29): {(17, 27): 3},
     (21, 29): {(21, 27): 3},
     (27, 29): {(27, 27): 3},
     (0, 3): {(3, 3): 3},
@@ -530,7 +613,96 @@ grafo_peatones = {
     (17, 27): {(21, 27): 4},
     (21, 27): {(27, 27): 6, (21, 21): 6},
     (27, 27): {(27, 21): 6},
+    # Center
+    (3, 9): {(3, 12): 3, (9, 9): 6},
+    (3, 12): {(3, 18): 6},
+    (3, 18): {(3, 21): 3},
+    (3, 21): {(3, 27): 6, (9, 21): 6},
+    (27, 9): {(21, 9): 6, (27, 12): 3},
+    (27, 12): {(27, 18): 6},
+    (27, 18): {(27, 21): 3},
+    (27, 21): {(27, 27): 6, (21, 21): 6},
+    # Roundabout
+    (9, 9): {(9, 21): 11},
+    (9, 21): {(21, 21): 11},
+    (21, 21): {(21, 9): 11},
+    (21, 9): {(9, 9): 11},
 }
+
+puntos_carros = [
+    (8, 0),
+    (18, 0),
+    (26, 0),
+    (0, 4),
+    (29, 8),
+    (0, 13),
+    (29, 17),
+    (0, 22),
+    (29, 26),
+    (4, 29),
+    (14, 29),
+    (22, 29),
+]
+
+llegada_carros = [
+    (4, 0),
+    (16, 0),
+    (22, 0),
+    (29, 4),
+    (0, 8),
+    (0, 17),
+    (0, 26),
+    (29, 4),
+    (29, 13),
+    (29, 22),
+    (26, 29),
+]
+
+grafo_carros = {
+    # Salida
+    (8, 0): {(8, 4): 4},
+    (18, 0): {(18, 4): 4},
+    (26, 0): {(26, 4): 4},
+    (0, 4): {(4, 4): 4},
+    (29, 8): {(26, 8): 3},
+    (0, 13): {(4, 13): 4},
+    (29, 17): {(26, 17): 3},
+    (0, 22): {(4, 22): 4},
+    (29, 26): {(26, 26): 3},
+    (4, 29): {(4, 26): 3},
+    (14, 29): {(14, 26): 3},
+    (22, 29): {(22, 26): 3},
+    # Llegada
+    (4, 4): {(4, 0): 4, (8, 4): 4},
+    (16, 4): {(16, 0): 4, (18, 4): 2},
+    (22, 4): {(22, 0): 4, (26, 4): 4},
+    (4, 8): {(0, 8): 4, (4, 4): 4},
+    (4, 17): {(0, 17): 4, (4, 13): 4},
+    (4, 26): {(0, 26): 4, (4, 22): 4},
+    (8, 26): {(8, 29): 3, (4, 26): 4},
+    (16, 26): {(16, 29): 3, (14, 26): 2},
+    (26, 4): {(29, 4): 3, (26, 8): 4},
+    (26, 13): {(29, 13): 3, (26, 17): 4},
+    (26, 22): {(29, 22): 3, (26, 26): 4},
+    (26, 26): {(26, 29): 3, (22, 26): 4},
+    # Los demas
+    (8, 4): {(16, 4): 8, (8, 8): 4},
+    (18, 4): {(22, 4): 4},
+    (8, 8): {(4, 8): 4, (8, 22): 14},
+    (22, 8): {(22, 4): 4, (8, 8): 14},
+    (26, 8): {(22, 8): 4, (26, 13): 5},
+    (26, 17): {(26, 22): 5},
+    (22, 22): {(22, 8): 14, (26, 22): 4},
+    (8, 22): {(22, 22): 14, (8, 26): 4},
+    (4, 22): {(8, 22): 4, (4, 17): 5},
+    (22, 26): {(16, 26): 6, (22, 22): 4},
+    (14, 26): {(8, 26): 6},
+}
+
+puntos_inicio_random_peatones = random.sample(puntos_peatones, 20)
+lineas_llegada_random_peatones = random.sample(puntos_peatones, 20)
+puntos_inicio_random_carros = random.sample(puntos_carros, 10)
+puntos_llegada_random_carros = random.sample(llegada_carros, 10)
 
 # -------------------------------------------------------------------------------------
 
@@ -590,6 +762,57 @@ class semaforoRAgent(Agent):
         pass
 
 
+class PeatonAgent(Agent):
+    def __init__(self, unique_id, model, pos, destino):
+        super().__init__(unique_id, model)
+        self.pos = pos
+        self.destino = destino
+        self.estado = 4
+        self.ruta = model.dijkstra(pos, self.destino, self.model.graph_peatones)
+
+        # self.ruta = self.ruta[1:]
+        self.step_count = 0  # Contador de pasos
+        print(
+            f"Peaton en {self.pos} con destino a {self.destino}. Mi ruta es: {self.ruta}"
+        )
+
+    def move(self):
+        if len(self.ruta) > 1:
+            siguiente_paso = self.ruta[1]
+
+            dx = siguiente_paso[0] - self.pos[0]
+            dy = siguiente_paso[1] - self.pos[1]
+
+            if dx != 0:
+                new_pos = (self.pos[0] + (dx // abs(dx)), self.pos[1])
+            elif dy != 0:
+                new_pos = (self.pos[0], self.pos[1] + (dy // abs(dy)))
+            else:
+                new_pos = self.pos
+                self.ruta = self.ruta[1:]
+
+            cell_contents = self.model.grid.get_cell_list_contents([new_pos])
+            for content in cell_contents:
+                if (
+                    isinstance(content, (semaforoRAgent, semaforoVAgent))
+                    and content.estado == 1
+                ):
+                    return
+
+            # Si no hay nada avanza
+            self.model.grid.move_agent(self, new_pos)
+            self.pos = new_pos
+            self.step_count += 1
+        else:
+            self.destino = random.choice(puntos_peatones)
+            self.ruta = self.model.dijkstra(
+                self.pos, self.destino, self.model.graph_peatones
+            )
+
+    def step(self):
+        self.move()
+
+
 class CarAgent(Agent):
     def __init__(self, unique_id, model, pos, destino):
         super().__init__(unique_id, model)
@@ -597,7 +820,7 @@ class CarAgent(Agent):
         self.destino = destino
         self.estado = 3
         self.direccion = "norte"
-        self.ruta = model.dijkstra(pos, destino)
+        self.ruta = model.dijkstra(pos, destino, self.model.graph_carros)
 
         # self.ruta = self.ruta[1:]
         self.step_count = 0  # Contador de pasos
@@ -653,24 +876,50 @@ class CarAgent(Agent):
 
 
 # -------------------------------------------------------------MODEL---------------------------------------------------------------------
-class CarModel(Model):
+class TrafficModel(Model):
     def __init__(self, width, height, num_agents):
         self.num_agents = num_agents
         self.grid = mesa.space.MultiGrid(width, height, True)
         self.schedule = RandomActivation(self)
+        self.graph_peatones = nx.Graph()
+        self.graph_carros = nx.DiGraph()
         self.step_count = 0
         o = 0
 
-        # Djikstra
-        # self.puntos_inicio = puntos_inicio_random
-        # self.lineas_llegada = lineas_llegada_random
+        for node, connections in grafo_peatones.items():
+            for neighbor, cost in connections.items():
+                self.graph_peatones.add_edge(node, neighbor, weight=cost)
 
-        # for punto, destino in zip(self.puntos_inicio, self.lineas_llegada):
-        #     x, y = punto
-        #     carro = CarAgent(o, model=self, pos=(x, y), destino=destino)
-        #     self.schedule.add(carro)
-        #     self.grid.place_agent(carro, (x, y))
-        #     o += 1
+        for node, connections in grafo_carros.items():
+            for neighbor, cost in connections.items():
+                self.graph_carros.add_edge(node, neighbor, weight=cost)
+
+        self.running = True
+
+        # Djikstra
+        self.puntos_inicio_peatones = puntos_inicio_random_peatones
+        self.lineas_llegada_peatones = lineas_llegada_random_peatones
+
+        self.puntos_inicio_carros = puntos_inicio_random_carros
+        self.lineas_llegada_carros = puntos_llegada_random_carros
+
+        for punto, destino in zip(
+            self.puntos_inicio_peatones, self.lineas_llegada_peatones
+        ):
+            x, y = punto
+            persona = PeatonAgent(o, model=self, pos=(x, y), destino=destino)
+            self.schedule.add(persona)
+            self.grid.place_agent(persona, (x, y))
+            o += 1
+
+        for punto, destino in zip(
+            self.puntos_inicio_carros, self.lineas_llegada_carros
+        ):
+            x, y = punto
+            carro = CarAgent(o, model=self, pos=(x, y), destino=destino)
+            self.schedule.add(carro)
+            self.grid.place_agent(carro, (x, y))
+            o += 1
 
         # Create the obstacles
         for i in edificios:
@@ -701,6 +950,12 @@ class CarModel(Model):
             self.schedule.add(pavA)
             self.grid.place_agent(pavA, (x, y))
             o += 1
+
+    def dijkstra(self, inicio, destino, grafo):
+        ruta_mas_corta = nx.shortest_path(
+            grafo, source=inicio, target=destino, weight="weight"
+        )
+        return ruta_mas_corta
 
     def step(self):
         self.schedule.step()
