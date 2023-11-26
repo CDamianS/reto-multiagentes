@@ -6,6 +6,7 @@ from traffic_model import (
     obstaculoAgent,
     banquetaAgent,
     PeatonAgent,
+    IceCreamAgent,
     CarAgent,
 )
 
@@ -50,11 +51,22 @@ def agent_portrayal(agent):
         portrayal["Filled"] = True
     if isinstance(agent, CarAgent):
         portrayal["Shape"] = "rect"
-        portrayal["Color"] = "#F1FA8C"
+        portrayal["Color"] = "#282A36"
         portrayal["Layer"] = 1
         portrayal["h"] = 1
         portrayal["w"] = 1
         portrayal["Filled"] = True
+    if isinstance(agent, IceCreamAgent):
+        portrayal["Shape"] = "rect"
+        portrayal["Color"] = "#F1FA8C"
+        portrayal["Layer"] = 1
+        portrayal["Filled"] = True
+        if agent.direccion in ["norte", "sur"]:
+            portrayal["h"] = 2
+            portrayal["w"] = 1
+        elif agent.direccion in ["este", "oeste"]:
+            portrayal["h"] = 1
+            portrayal["w"] = 2
 
     return portrayal
 

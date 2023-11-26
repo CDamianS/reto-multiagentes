@@ -691,6 +691,7 @@ grafo_carros = {
     (8, 8): {(4, 8): 4, (8, 22): 14},
     (22, 8): {(22, 4): 4, (8, 8): 14},
     (26, 8): {(22, 8): 4, (26, 13): 5},
+    (4, 13): {(4, 8): 4},
     (26, 17): {(26, 22): 5},
     (22, 22): {(22, 8): 14, (26, 22): 4},
     (8, 22): {(22, 22): 14, (8, 26): 4},
@@ -699,10 +700,18 @@ grafo_carros = {
     (14, 26): {(8, 26): 6},
 }
 
+recorrido_icecream = [
+    # Llegada
+    (26, 4),
+    (26, 26),
+    (4, 26),
+    (4, 4),
+]
+
 puntos_inicio_random_peatones = random.sample(puntos_peatones, 20)
 lineas_llegada_random_peatones = random.sample(puntos_peatones, 20)
-puntos_inicio_random_carros = random.sample(puntos_carros, 10)
-puntos_llegada_random_carros = random.sample(llegada_carros, 10)
+puntos_inicio_random_carros = random.sample(puntos_carros, 11)
+puntos_llegada_random_carros = random.sample(llegada_carros, 11)
 
 # -------------------------------------------------------------------------------------
 
@@ -825,7 +834,7 @@ class CarAgent(Agent):
         # self.ruta = self.ruta[1:]
         self.step_count = 0  # Contador de pasos
         print(
-            f"Agente en {self.pos} con destino a {self.destino}. Mi ruta es: {self.ruta}"
+            f"Carro en {self.pos} con destino a {self.destino}. Mi ruta es: {self.ruta}"
         )
 
     def move(self):
@@ -862,7 +871,11 @@ class CarAgent(Agent):
                     return
 
             # Si es carro espera
-            car_agents = [obj for obj in cell_contents if isinstance(obj, CarAgent)]
+            car_agents = [
+                obj
+                for obj in cell_contents
+                if isinstance(obj, CarAgent) or isinstance(obj, IceCreamAgent)
+            ]
             if car_agents:
                 return
 
@@ -872,6 +885,72 @@ class CarAgent(Agent):
             self.step_count += 1
 
     def step(self):
+        self.move()
+
+
+class IceCreamAgent(Agent):
+    def __init__(self, unique_id, model, pos):
+        super().__init__(unique_id, model)
+        self.pos = pos
+        self.coordenadas = recorrido_icecream
+        self.estado = 3
+        self.direccion = "norte"
+        self.step_count = 0
+        print(f"Icecream en {self.pos}.")
+
+    def move(self):
+        if not self.coordenadas:
+            print("se acabaron las coords")
+            self.coordenadas = recorrido_icecream
+
+        siguiente_paso = self.coordenadas[0]
+        print(f"siguiente paso? {siguiente_paso}")
+
+        dx = siguiente_paso[0] - self.pos[0]
+        dy = siguiente_paso[1] - self.pos[1]
+
+        if dx != 0:
+            if dx > 0:
+                self.direccion = "este"
+            else:
+                self.direccion = "oeste"
+            new_pos = (self.pos[0] + (dx // abs(dx)), self.pos[1])
+        elif dy != 0:
+            # Define la direccion
+            if dy > 0:
+                self.direccion = "norte"
+            else:
+                self.direccion = "sur"
+            new_pos = (self.pos[0], self.pos[1] + (dy // abs(dy)))
+        else:
+            new_pos = self.pos
+            self.coordenadas = self.coordenadas[1:]
+
+        # Si es semáforo espera
+        cell_contents = self.model.grid.get_cell_list_contents([new_pos])
+        for content in cell_contents:
+            if (
+                isinstance(content, (semaforoRAgent, semaforoVAgent))
+                and content.estado == 0
+            ):
+                return
+
+        # Si es carro espera
+        car_agents = [
+            obj
+            for obj in cell_contents
+            if isinstance(obj, CarAgent) or isinstance(obj, IceCreamAgent)
+        ]
+        if car_agents:
+            return
+
+        # Si no hay nada avanza
+        self.model.grid.move_agent(self, new_pos)
+        self.pos = new_pos
+        self.step_count += 1
+
+    def step(self):
+        print(f"Estoy en {self.pos}")
         self.move()
 
 
@@ -921,6 +1000,12 @@ class TrafficModel(Model):
             self.grid.place_agent(carro, (x, y))
             o += 1
 
+        # IceCream
+        icecream = IceCreamAgent(o, model=self, pos=(4, 4))
+        self.schedule.add(icecream)
+        self.grid.place_agent(icecream, (4, 4))
+        o += 1
+
         # Create the obstacles
         for i in edificios:
             pavA = obstaculoAgent(o, self)
@@ -929,7 +1014,6 @@ class TrafficModel(Model):
             self.grid.place_agent(pavA, (x, y))
             o += 1
 
-            # Create the obstacles
         for i in banqueta:
             pavA = banquetaAgent(o, self)
             x, y = i
