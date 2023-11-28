@@ -896,15 +896,14 @@ class IceCreamAgent(Agent):
         self.estado = 3
         self.direccion = "norte"
         self.step_count = 0
-        print(f"Icecream en {self.pos}.")
 
     def move(self):
         if not self.coordenadas:
-            print("se acabaron las coords")
+            #print("se acabaron las coords")
             self.coordenadas = recorrido_icecream
 
         siguiente_paso = self.coordenadas[0]
-        print(f"siguiente paso? {siguiente_paso}")
+        #print(f"siguiente paso? {siguiente_paso}")
 
         dx = siguiente_paso[0] - self.pos[0]
         dy = siguiente_paso[1] - self.pos[1]
@@ -1040,10 +1039,39 @@ class TrafficModel(Model):
             grafo, source=inicio, target=destino, weight="weight"
         )
         return ruta_mas_corta
+    
+    def send_positions_to_server(self):
+        positions_data = {
+            f"car_{car_agent_agent.unique_id}": [
+                car_agent_agent.pos[0],
+                car_agent_agent.pos[1],
+            ]
+            for car_agent_agent in self.schedule.agents
+            if isinstance(car_agent_agent, CarAgent)
+        }
+        semaforoR_data = {
+            f"semaforo_{semaforoRAgent_agent.unique_id}": [semaforoRAgent_agent.estado, semaforoRAgent_agent.pos[0],
+                semaforoRAgent_agent.pos[1]]
+            for semaforoRAgent_agent in self.schedule.agents
+            if isinstance(semaforoRAgent_agent, semaforoRAgent)
+        }
+
+        semaforoV_data = {
+            f"semaforo_{semaforoRAgent_agent.unique_id}": [semaforoRAgent_agent.estado, semaforoRAgent_agent.pos[0],
+                semaforoRAgent_agent.pos[1]]
+            for semaforoRAgent_agent in self.schedule.agents
+            if isinstance(semaforoRAgent_agent, semaforoVAgent)
+        }
+
+        semaforoV_data |= semaforoR_data
+
+        print("SemVData:", semaforoV_data)
+        requests.post("http://127.0.0.1:5000/update_positions", json=positions_data)
+        requests.post("http://127.0.0.1:5000/update_estados", json=semaforoV_data)
 
     def step(self):
         self.schedule.step()
         self.step_count += 1  # Incrementar el contador de pasos en cada llamada a step
-        if self.step_count >= 100:
+        if self.step_count >= 250:
             self.running = False
-        # self.send_positions_to_server()  # Añadir esta línea al final de step
+        self.send_positions_to_server()  # Añadir esta línea al final de step
