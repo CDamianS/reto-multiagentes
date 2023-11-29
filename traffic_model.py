@@ -1064,7 +1064,7 @@ class TrafficModel(Model):
         positions_dataCompas = {
             f"peaton_{PeatonAgent_agent.unique_id}": [
                 PeatonAgent_agent.pos[0],
-                PeatonAgent_agent.pos[1],
+                PeatonAgent_agent.pos[1],PeatonAgent_agent.chocado
             ]
             for PeatonAgent_agent in self.schedule.agents
             if isinstance(PeatonAgent_agent, PeatonAgent)
