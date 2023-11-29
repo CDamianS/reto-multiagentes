@@ -708,8 +708,8 @@ recorrido_icecream = [
     (4, 4),
 ]
 
-puntos_inicio_random_peatones = random.sample(puntos_peatones, 20)
-lineas_llegada_random_peatones = random.sample(puntos_peatones, 20)
+puntos_inicio_random_peatones = random.choices(puntos_peatones, k=100)
+lineas_llegada_random_peatones = random.choices(puntos_peatones, k=100)
 puntos_inicio_random_carros = random.sample(puntos_carros, 11)
 puntos_llegada_random_carros = random.sample(llegada_carros, 11)
 
@@ -777,13 +777,14 @@ class PeatonAgent(Agent):
         self.pos = pos
         self.destino = destino
         self.estado = 4
+        self.chocado = False
         self.ruta = model.dijkstra(pos, self.destino, self.model.graph_peatones)
 
         # self.ruta = self.ruta[1:]
         self.step_count = 0  # Contador de pasos
-        print(
-            f"Peaton en {self.pos} con destino a {self.destino}. Mi ruta es: {self.ruta}"
-        )
+        # print(
+        #     f"Peaton en {self.pos} con destino a {self.destino}. Mi ruta es: {self.ruta}"
+        # )
 
     def move(self):
         if len(self.ruta) > 1:
@@ -819,7 +820,8 @@ class PeatonAgent(Agent):
             )
 
     def step(self):
-        self.move()
+        if not self.chocado:
+            self.move()
 
 
 class CarAgent(Agent):
@@ -864,6 +866,9 @@ class CarAgent(Agent):
             # Si es semaforo espera
             cell_contents = self.model.grid.get_cell_list_contents([new_pos])
             for content in cell_contents:
+                if isinstance(content, PeatonAgent):  # and random.randrange(10) != 9:
+                    content.chocado = True
+                    print("ya morí :(")
                 if (
                     isinstance(content, (semaforoRAgent, semaforoVAgent))
                     and content.estado == 0
@@ -900,11 +905,9 @@ class IceCreamAgent(Agent):
 
     def move(self):
         if not self.coordenadas:
-            print("se acabaron las coords")
             self.coordenadas = recorrido_icecream
 
         siguiente_paso = self.coordenadas[0]
-        print(f"siguiente paso? {siguiente_paso}")
 
         dx = siguiente_paso[0] - self.pos[0]
         dy = siguiente_paso[1] - self.pos[1]
@@ -950,7 +953,6 @@ class IceCreamAgent(Agent):
         self.step_count += 1
 
     def step(self):
-        print(f"Estoy en {self.pos}")
         self.move()
 
 
@@ -963,6 +965,7 @@ class TrafficModel(Model):
         self.graph_peatones = nx.Graph()
         self.graph_carros = nx.DiGraph()
         self.step_count = 0
+        self.chocados = 0
         o = 0
 
         for node, connections in grafo_peatones.items():
