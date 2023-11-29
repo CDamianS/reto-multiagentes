@@ -644,6 +644,46 @@ puntos_carros = [
     (22, 29),
 ]
 
+# para pruebas solamente
+puntos_extras_carros = [
+    (8, 0),
+    (18, 0),
+    (26, 0),
+    (0, 4),
+    (29, 8),
+    (0, 13),
+    (29, 17),
+    (0, 22),
+    (29, 26),
+    (4, 29),
+    (14, 29),
+    (22, 29),
+    (4, 4),
+    (16, 4),
+    (22, 4),
+    (4, 8),
+    (4, 17),
+    (4, 26),
+    (8, 26),
+    (16, 26),
+    (26, 4),
+    (26, 13),
+    (26, 22),
+    (26, 26),
+    (8, 4),
+    (18, 4),
+    (8, 8),
+    (22, 8),
+    (26, 8),
+    (4, 13),
+    (26, 17),
+    (22, 22),
+    (8, 22),
+    (4, 22),
+    (22, 26),
+    (14, 26),
+]
+
 llegada_carros = [
     (4, 0),
     (16, 0),
@@ -775,12 +815,7 @@ class PeatonAgent(Agent):
         self.estado = 4
         self.chocado = False
         self.ruta = model.dijkstra(pos, self.destino, self.model.graph_peatones)
-
-        # self.ruta = self.ruta[1:]
         self.step_count = 0  # Contador de pasos
-        # print(
-        #     f"Peaton en {self.pos} con destino a {self.destino}. Mi ruta es: {self.ruta}"
-        # )
 
     def move(self):
         if len(self.ruta) > 1:
@@ -802,6 +837,7 @@ class PeatonAgent(Agent):
                 if (
                     isinstance(content, (semaforoRAgent, semaforoVAgent))
                     and content.estado == 1
+                    and random.randrange(99) < 94
                 ):
                     return
 
@@ -814,6 +850,7 @@ class PeatonAgent(Agent):
             self.ruta = self.model.dijkstra(
                 self.pos, self.destino, self.model.graph_peatones
             )
+            return
 
     def step(self):
         if not self.chocado:
@@ -858,9 +895,13 @@ class CarAgent(Agent):
             # Si es semaforo espera, si es peaton, quizas atropella
             cell_contents = self.model.grid.get_cell_list_contents([new_pos])
             for content in cell_contents:
-                if isinstance(content, PeatonAgent) and content.chocado != True and random.randrange(9) != 9:
+                if (
+                    isinstance(content, PeatonAgent)
+                    and content.chocado != True
+                    and random.randrange(9) != 9
+                ):
                     content.chocado = True
-                    self.model.chocados +=1
+                    self.model.chocados += 1
                 if (
                     isinstance(content, (semaforoRAgent, semaforoVAgent))
                     and content.estado == 0
@@ -880,6 +921,13 @@ class CarAgent(Agent):
             self.model.grid.move_agent(self, new_pos)
             self.pos = new_pos
             self.step_count += 1
+        else:
+            new_pos = random.choice(puntos_carros)
+            self.model.grid.move_agent(self, new_pos)
+            self.pos = new_pos
+            self.ruta = self.model.dijkstra(
+                self.pos, random.choice(llegada_carros), self.model.graph_carros
+            )
 
     def step(self):
         self.move()
@@ -923,14 +971,18 @@ class IceCreamAgent(Agent):
             # Si es semaforo espera, si es peaton, quizas atropella
             cell_contents = self.model.grid.get_cell_list_contents([new_pos])
             for content in cell_contents:
-                if isinstance(content, PeatonAgent) and content.chocado != True and random.randrange(10) < 5:
-                    content.chocado = True
-                    self.model.chocados +=1
                 if (
                     isinstance(content, (semaforoRAgent, semaforoVAgent))
                     and content.estado == 0
                 ):
                     return
+                if (
+                    isinstance(content, PeatonAgent)
+                    and content.chocado != True
+                    and random.randrange(10) < 5
+                ):
+                    content.chocado = True
+                    self.model.chocados += 1
 
             # Si es carro espera
             car_agents = [
@@ -962,7 +1014,9 @@ class TrafficModel(Model):
         self.num_agents = num_agents
         self.chocados = 0
         self.datacollector = mesa.DataCollector(
-            {"chocados": "chocados",}
+            {
+                "chocados": "chocados",
+            }
         )
         o = 0
 
@@ -978,10 +1032,12 @@ class TrafficModel(Model):
 
         # Djikstra
         self.puntos_inicio_peatones = random.choices(puntos_peatones, k=self.num_agents)
-        self.lineas_llegada_peatones = random.choices(puntos_peatones, k=self.num_agents)
+        self.lineas_llegada_peatones = random.choices(
+            puntos_peatones, k=self.num_agents
+        )
 
-        self.puntos_inicio_carros = random.sample(puntos_carros, 11)
-        self.lineas_llegada_carros = random.sample(llegada_carros, 11)
+        self.puntos_inicio_carros = random.sample(puntos_extras_carros, 30)
+        self.lineas_llegada_carros = llegada_carros
 
         for punto, destino in zip(
             self.puntos_inicio_peatones, self.lineas_llegada_peatones
@@ -992,11 +1048,14 @@ class TrafficModel(Model):
             self.grid.place_agent(persona, (x, y))
             o += 1
 
-        for punto, destino in zip(
-            self.puntos_inicio_carros, self.lineas_llegada_carros
-        ):
+        for punto in self.puntos_inicio_carros:
             x, y = punto
-            carro = CarAgent(o, model=self, pos=(x, y), destino=destino)
+            carro = CarAgent(
+                o,
+                model=self,
+                pos=(x, y),
+                destino=random.choice(self.lineas_llegada_carros),
+            )
             self.schedule.add(carro)
             self.grid.place_agent(carro, (x, y))
             o += 1
@@ -1041,7 +1100,7 @@ class TrafficModel(Model):
             grafo, source=inicio, target=destino, weight="weight"
         )
         return ruta_mas_corta
-    
+
     def send_positions_to_server(self):
         positions_data = {
             f"car_{car_agent_agent.unique_id}": [
@@ -1070,15 +1129,21 @@ class TrafficModel(Model):
             if isinstance(PeatonAgent_agent, PeatonAgent)
         }
         semaforoR_data = {
-            f"semaforo_{semaforoRAgent_agent.unique_id}": [semaforoRAgent_agent.estado, semaforoRAgent_agent.pos[0],
-                semaforoRAgent_agent.pos[1]]
+            f"semaforo_{semaforoRAgent_agent.unique_id}": [
+                semaforoRAgent_agent.estado,
+                semaforoRAgent_agent.pos[0],
+                semaforoRAgent_agent.pos[1],
+            ]
             for semaforoRAgent_agent in self.schedule.agents
             if isinstance(semaforoRAgent_agent, semaforoRAgent)
         }
 
         semaforoV_data = {
-            f"semaforo_{semaforoRAgent_agent.unique_id}": [semaforoRAgent_agent.estado, semaforoRAgent_agent.pos[0],
-                semaforoRAgent_agent.pos[1]]
+            f"semaforo_{semaforoRAgent_agent.unique_id}": [
+                semaforoRAgent_agent.estado,
+                semaforoRAgent_agent.pos[0],
+                semaforoRAgent_agent.pos[1],
+            ]
             for semaforoRAgent_agent in self.schedule.agents
             if isinstance(semaforoRAgent_agent, semaforoVAgent)
         }
@@ -1086,8 +1151,12 @@ class TrafficModel(Model):
         semaforoV_data |= semaforoR_data
 
         requests.post("http://127.0.0.1:5000/update_positions", json=positions_data)
-        requests.post("http://127.0.0.1:5000/update_positionsCompas", json=positions_dataCompas)
-        requests.post("http://127.0.0.1:5000/update_positionsHelado", json=positions_dataH)
+        requests.post(
+            "http://127.0.0.1:5000/update_positionsCompas", json=positions_dataCompas
+        )
+        requests.post(
+            "http://127.0.0.1:5000/update_positionsHelado", json=positions_dataH
+        )
         requests.post("http://127.0.0.1:5000/update_estados", json=semaforoV_data)
 
     def step(self):

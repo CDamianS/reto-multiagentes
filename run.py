@@ -82,7 +82,9 @@ server = mesa.visualization.ModularServer(
      choques_chart
      ],
     "Car Model",
-    {"width": 30, "height": 30, "num_agents": 100},
+    {"width": 30,
+     "height": 30,
+     "num_agents": mesa.visualization.Slider("Numero de Peatones", 20, 0, 100, 2),},
 )
 server.port = 8521  # the default
 server.launch()
