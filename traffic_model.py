@@ -835,9 +835,9 @@ class CarAgent(Agent):
 
         # self.ruta = self.ruta[1:]
         self.step_count = 0  # Contador de pasos
-        print(
-            f"Carro en {self.pos} con destino a {self.destino}. Mi ruta es: {self.ruta}"
-        )
+        # print(
+        #     f"Carro en {self.pos} con destino a {self.destino}. Mi ruta es: {self.ruta}"
+        # )
 
     def move(self):
         if len(self.ruta) > 1:
