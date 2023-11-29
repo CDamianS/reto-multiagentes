@@ -866,8 +866,9 @@ class CarAgent(Agent):
             # Si es semaforo espera
             cell_contents = self.model.grid.get_cell_list_contents([new_pos])
             for content in cell_contents:
-                if isinstance(content, PeatonAgent):  # and random.randrange(10) != 9:
+                if isinstance(content, PeatonAgent) and content.chocado != True and random.randrange(10) != 9:
                     content.chocado = True
+                    self.model.chocados +=1
                     print("ya morí :(")
                 if (
                     isinstance(content, (semaforoRAgent, semaforoVAgent))
@@ -965,6 +966,9 @@ class TrafficModel(Model):
         self.graph_carros = nx.DiGraph()
         self.step_count = 0
         self.chocados = 0
+        self.datacollector = mesa.DataCollector(
+            {"chocados": "chocados",}
+        )
         o = 0
 
         for node, connections in grafo_peatones.items():
@@ -1093,6 +1097,7 @@ class TrafficModel(Model):
         requests.post("http://127.0.0.1:5000/update_estados", json=semaforoV_data)
 
     def step(self):
+        self.datacollector.collect(self)
         self.schedule.step()
         self.step_count += 1  # Incrementar el contador de pasos en cada llamada a step
         if self.step_count >= 250:
