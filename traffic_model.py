@@ -863,13 +863,12 @@ class CarAgent(Agent):
                 new_pos = self.pos
                 self.ruta = self.ruta[1:]
 
-            # Si es semaforo espera
+            # Si es semaforo espera, si es peaton, quizas atropella
             cell_contents = self.model.grid.get_cell_list_contents([new_pos])
             for content in cell_contents:
-                if isinstance(content, PeatonAgent) and content.chocado != True and random.randrange(10) != 9:
+                if isinstance(content, PeatonAgent) and content.chocado != True and random.randrange(9) != 9:
                     content.chocado = True
                     self.model.chocados +=1
-                    print("ya morí :(")
                 if (
                     isinstance(content, (semaforoRAgent, semaforoVAgent))
                     and content.estado == 0
@@ -929,23 +928,26 @@ class IceCreamAgent(Agent):
             new_pos = self.pos
             self.coordenadas = self.coordenadas[1:]
 
-        # Si es semáforo espera
-        cell_contents = self.model.grid.get_cell_list_contents([new_pos])
-        for content in cell_contents:
-            if (
-                isinstance(content, (semaforoRAgent, semaforoVAgent))
-                and content.estado == 0
-            ):
-                return
+            # Si es semaforo espera, si es peaton, quizas atropella
+            cell_contents = self.model.grid.get_cell_list_contents([new_pos])
+            for content in cell_contents:
+                if isinstance(content, PeatonAgent) and content.chocado != True and random.randrange(10) < 5:
+                    content.chocado = True
+                    self.model.chocados +=1
+                if (
+                    isinstance(content, (semaforoRAgent, semaforoVAgent))
+                    and content.estado == 0
+                ):
+                    return
 
-        # Si es carro espera
-        car_agents = [
-            obj
-            for obj in cell_contents
-            if isinstance(obj, CarAgent) or isinstance(obj, IceCreamAgent)
-        ]
-        if car_agents:
-            return
+            # Si es carro espera
+            car_agents = [
+                obj
+                for obj in cell_contents
+                if isinstance(obj, CarAgent) or isinstance(obj, IceCreamAgent)
+            ]
+            if car_agents:
+                return
 
         # Si no hay nada avanza
         self.model.grid.move_agent(self, new_pos)
@@ -1090,7 +1092,6 @@ class TrafficModel(Model):
 
         semaforoV_data |= semaforoR_data
 
-        print("SemVData:", semaforoV_data)
         requests.post("http://127.0.0.1:5000/update_positions", json=positions_data)
         requests.post("http://127.0.0.1:5000/update_positionsCompas", json=positions_dataCompas)
         requests.post("http://127.0.0.1:5000/update_positionsHelado", json=positions_dataH)
