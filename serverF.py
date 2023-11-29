@@ -31,5 +31,29 @@ def get_states():
     states_list = [{"id": key, "state": value} for key, value in agent_states.items()]
     return jsonify(states_list)
 
+@app.route('/update_positionsCompas', methods=['POST'])
+def update_postionsCompas():
+    data = request.json
+    agent_states.update(data)
+    return jsonify({"status": "success State"})
+
+@app.route('/agent_postionsCompas', methods=['GET'])
+def get_positionsCompas():
+    # Convertir el diccionario en una lista de objetos para que Unity pueda procesarlo
+    states_list = [{"id": key, "position": value} for key, value in agent_states.items()]
+    return jsonify(states_list)
+
+@app.route('/update_positionsHelado', methods=['POST'])
+def update_postionsHelado():
+    data = request.json
+    agent_states.update(data)
+    return jsonify({"status": "success State"})
+
+@app.route('/agent_postionsHelado', methods=['GET'])
+def get_Helado():
+    # Convertir el diccionario en una lista de objetos para que Unity pueda procesarlo
+    states_list = [{"id": key, "position": value} for key, value in agent_states.items()]
+    return jsonify(states_list)
+
 if __name__ == '__main__':
     app.run(debug=True, port=5000)

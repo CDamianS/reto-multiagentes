@@ -1049,6 +1049,24 @@ class TrafficModel(Model):
             for car_agent_agent in self.schedule.agents
             if isinstance(car_agent_agent, CarAgent)
         }
+
+        positions_dataH = {
+            f"car_{IceCreamAgent_agent.unique_id}": [
+                IceCreamAgent_agent.pos[0],
+                IceCreamAgent_agent.pos[1],
+            ]
+            for IceCreamAgent_agent in self.schedule.agents
+            if isinstance(IceCreamAgent_agent, IceCreamAgent)
+        }
+
+        positions_dataCompas = {
+            f"peaton_{PeatonAgent_agent.unique_id}": [
+                PeatonAgent_agent.pos[0],
+                PeatonAgent_agent.pos[1],
+            ]
+            for PeatonAgent_agent in self.schedule.agents
+            if isinstance(PeatonAgent_agent, PeatonAgent)
+        }
         semaforoR_data = {
             f"semaforo_{semaforoRAgent_agent.unique_id}": [semaforoRAgent_agent.estado, semaforoRAgent_agent.pos[0],
                 semaforoRAgent_agent.pos[1]]
@@ -1067,6 +1085,8 @@ class TrafficModel(Model):
 
         print("SemVData:", semaforoV_data)
         requests.post("http://127.0.0.1:5000/update_positions", json=positions_data)
+        requests.post("http://127.0.0.1:5000/update_positionsCompas", json=positions_dataCompas)
+        requests.post("http://127.0.0.1:5000/update_positionsHelado", json=positions_dataH)
         requests.post("http://127.0.0.1:5000/update_estados", json=semaforoV_data)
 
     def step(self):
