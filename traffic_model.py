@@ -901,7 +901,6 @@ class IceCreamAgent(Agent):
         self.estado = 3
         self.direccion = "norte"
         self.step_count = 0
-        print(f"Icecream en {self.pos}.")
 
     def move(self):
         if not self.coordenadas:
@@ -1043,10 +1042,59 @@ class TrafficModel(Model):
             grafo, source=inicio, target=destino, weight="weight"
         )
         return ruta_mas_corta
+    
+    def send_positions_to_server(self):
+        positions_data = {
+            f"car_{car_agent_agent.unique_id}": [
+                car_agent_agent.pos[0],
+                car_agent_agent.pos[1],
+            ]
+            for car_agent_agent in self.schedule.agents
+            if isinstance(car_agent_agent, CarAgent)
+        }
+
+        positions_dataH = {
+            f"car_{IceCreamAgent_agent.unique_id}": [
+                IceCreamAgent_agent.pos[0],
+                IceCreamAgent_agent.pos[1],
+            ]
+            for IceCreamAgent_agent in self.schedule.agents
+            if isinstance(IceCreamAgent_agent, IceCreamAgent)
+        }
+
+        positions_dataCompas = {
+            f"peaton_{PeatonAgent_agent.unique_id}": [
+                PeatonAgent_agent.pos[0],
+                PeatonAgent_agent.pos[1],
+            ]
+            for PeatonAgent_agent in self.schedule.agents
+            if isinstance(PeatonAgent_agent, PeatonAgent)
+        }
+        semaforoR_data = {
+            f"semaforo_{semaforoRAgent_agent.unique_id}": [semaforoRAgent_agent.estado, semaforoRAgent_agent.pos[0],
+                semaforoRAgent_agent.pos[1]]
+            for semaforoRAgent_agent in self.schedule.agents
+            if isinstance(semaforoRAgent_agent, semaforoRAgent)
+        }
+
+        semaforoV_data = {
+            f"semaforo_{semaforoRAgent_agent.unique_id}": [semaforoRAgent_agent.estado, semaforoRAgent_agent.pos[0],
+                semaforoRAgent_agent.pos[1]]
+            for semaforoRAgent_agent in self.schedule.agents
+            if isinstance(semaforoRAgent_agent, semaforoVAgent)
+        }
+
+        semaforoV_data |= semaforoR_data
+
+        print("SemVData:", semaforoV_data)
+        requests.post("http://127.0.0.1:5000/update_positions", json=positions_data)
+        requests.post("http://127.0.0.1:5000/update_positionsCompas", json=positions_dataCompas)
+        requests.post("http://127.0.0.1:5000/update_positionsHelado", json=positions_dataH)
+        requests.post("http://127.0.0.1:5000/update_estados", json=semaforoV_data)
 
     def step(self):
         self.schedule.step()
         self.step_count += 1  # Incrementar el contador de pasos en cada llamada a step
-        if self.step_count >= 100:
+        if self.step_count >= 250:
             self.running = False
-        # self.send_positions_to_server()  # Añadir esta línea al final de step
+        self.send_positions_to_server()  # Añadir esta línea al final de step
