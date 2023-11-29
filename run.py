@@ -82,7 +82,7 @@ server = mesa.visualization.ModularServer(
      choques_chart
      ],
     "Car Model",
-    {"width": 30, "height": 30, "num_agents": 5},
+    {"width": 30, "height": 30, "num_agents": 100},
 )
 server.port = 8521  # the default
 server.launch()

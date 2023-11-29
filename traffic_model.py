@@ -708,10 +708,6 @@ recorrido_icecream = [
     (4, 4),
 ]
 
-puntos_inicio_random_peatones = random.choices(puntos_peatones, k=100)
-lineas_llegada_random_peatones = random.choices(puntos_peatones, k=100)
-puntos_inicio_random_carros = random.sample(puntos_carros, 11)
-puntos_llegada_random_carros = random.sample(llegada_carros, 11)
 
 # -------------------------------------------------------------------------------------
 
@@ -833,11 +829,7 @@ class CarAgent(Agent):
         self.direccion = "norte"
         self.ruta = model.dijkstra(pos, destino, self.model.graph_carros)
 
-        # self.ruta = self.ruta[1:]
         self.step_count = 0  # Contador de pasos
-        # print(
-        #     f"Carro en {self.pos} con destino a {self.destino}. Mi ruta es: {self.ruta}"
-        # )
 
     def move(self):
         if len(self.ruta) > 1:
@@ -967,6 +959,7 @@ class TrafficModel(Model):
         self.graph_peatones = nx.Graph()
         self.graph_carros = nx.DiGraph()
         self.step_count = 0
+        self.num_agents = num_agents
         self.chocados = 0
         self.datacollector = mesa.DataCollector(
             {"chocados": "chocados",}
@@ -984,11 +977,11 @@ class TrafficModel(Model):
         self.running = True
 
         # Djikstra
-        self.puntos_inicio_peatones = puntos_inicio_random_peatones
-        self.lineas_llegada_peatones = lineas_llegada_random_peatones
+        self.puntos_inicio_peatones = random.choices(puntos_peatones, k=self.num_agents)
+        self.lineas_llegada_peatones = random.choices(puntos_peatones, k=self.num_agents)
 
-        self.puntos_inicio_carros = puntos_inicio_random_carros
-        self.lineas_llegada_carros = puntos_llegada_random_carros
+        self.puntos_inicio_carros = random.sample(puntos_carros, 11)
+        self.lineas_llegada_carros = random.sample(llegada_carros, 11)
 
         for punto, destino in zip(
             self.puntos_inicio_peatones, self.lineas_llegada_peatones
