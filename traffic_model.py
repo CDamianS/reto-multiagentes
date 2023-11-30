@@ -898,7 +898,8 @@ class CarAgent(Agent):
                 if (
                     isinstance(content, PeatonAgent)
                     and content.chocado != True
-                    and random.randrange(9) != 9
+                    # 80% de probabilidad de choque
+                    and random.randrange(9) < 7
                 ):
                     content.chocado = True
                     self.model.chocados += 1
@@ -1004,14 +1005,14 @@ class IceCreamAgent(Agent):
 
 # -------------------------------------------------------------MODEL---------------------------------------------------------------------
 class TrafficModel(Model):
-    def __init__(self, width, height, num_agents):
-        self.num_agents = num_agents
+    def __init__(self, width, height, num_peatones, num_autos):
+        self.num_peatones = num_peatones
+        self.num_autos = num_autos
         self.grid = mesa.space.MultiGrid(width, height, True)
         self.schedule = RandomActivation(self)
         self.graph_peatones = nx.Graph()
         self.graph_carros = nx.DiGraph()
         self.step_count = 0
-        self.num_agents = num_agents
         self.chocados = 0
         self.datacollector = mesa.DataCollector(
             {
@@ -1031,12 +1032,14 @@ class TrafficModel(Model):
         self.running = True
 
         # Djikstra
-        self.puntos_inicio_peatones = random.choices(puntos_peatones, k=self.num_agents)
+        self.puntos_inicio_peatones = random.choices(
+            puntos_peatones, k=self.num_peatones
+        )
         self.lineas_llegada_peatones = random.choices(
-            puntos_peatones, k=self.num_agents
+            puntos_peatones, k=self.num_peatones
         )
 
-        self.puntos_inicio_carros = random.sample(puntos_extras_carros, 30)
+        self.puntos_inicio_carros = random.sample(puntos_extras_carros, num_autos)
         self.lineas_llegada_carros = llegada_carros
 
         for punto, destino in zip(
@@ -1123,7 +1126,8 @@ class TrafficModel(Model):
         positions_dataCompas = {
             f"peaton_{PeatonAgent_agent.unique_id}": [
                 PeatonAgent_agent.pos[0],
-                PeatonAgent_agent.pos[1],PeatonAgent_agent.chocado
+                PeatonAgent_agent.pos[1],
+                PeatonAgent_agent.chocado,
             ]
             for PeatonAgent_agent in self.schedule.agents
             if isinstance(PeatonAgent_agent, PeatonAgent)

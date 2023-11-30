@@ -15,28 +15,28 @@ from traffic_model import (
 batch_run_params = {
     "width": [30],
     "height": [30],
-    "num_agents": [20],
+    "num_peatones": [30],
+    "num_autos": [10],
 }
 
 data = mesa.batch_run(
     TrafficModel,
     batch_run_params,
-    iterations=20,  # Number of iterations for each parameter combination
-    max_steps=150,  # Number of steps for each run
+    iterations=20,
+    max_steps=150,
 )
-
 
 df = pd.DataFrame(data)
 
 df.to_csv("TrafficModel_Data.csv", index=False)
 
-grouped_data = df.groupby('iteration').mean()
+grouped_data = df.groupby("iteration").mean()
 
 plt.figure(figsize=(10, 6))
-# plt.plot(grouped_data['pasos'], label='Pasos')
-plt.plot(grouped_data['chocados'], label='Peatones chocados')
-plt.title('Peatones con semaforos en posición A')
-plt.xlabel('Iteration')
-plt.ylabel('Count')
+plt.bar(grouped_data.index, grouped_data["chocados"], label="Peatones chocados")
+plt.title("Accidentes con semáforos en posición A")
+plt.xlabel("Iteración")
+plt.ylabel("Cantidad")
 plt.legend()
+plt.savefig("TrafficModel_Graph.png")
 plt.show()
