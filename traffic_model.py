@@ -445,7 +445,7 @@ banqueta = [
 ]
 
 # Posicion A
-"""
+
 semaforosV = [
      (7, 3),
      (8, 3),
@@ -487,7 +487,7 @@ semaforosH = [
      (27, 16),
      (27, 17),
 ]
-"""
+
 # Sin semaforos
 #semaforosV = []
 #semaforosH = []
@@ -585,6 +585,7 @@ semaforosH = [
 ]
 """
 # Posicion C
+"""
 semaforosV = [
      (7, 2),
      (8, 2),
@@ -625,7 +626,7 @@ semaforosH = [
      (28, 16),
      (28, 17),
 ]
-
+"""
 puntos_salida_autos = [
     # First street
     (4, 0),
