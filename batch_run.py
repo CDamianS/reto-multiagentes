@@ -34,7 +34,7 @@ grouped_data = df.groupby("iteration").mean()
 
 plt.figure(figsize=(10, 6))
 plt.bar(grouped_data.index, grouped_data["chocados"], label="Peatones chocados")
-plt.title("Semaforos en posición B")
+plt.title("Semaforos en posición A")
 plt.xlabel("Iteración")
 plt.ylabel("Cantidad")
 plt.legend()

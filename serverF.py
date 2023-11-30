@@ -5,6 +5,7 @@ app = Flask(__name__)
 # Almacenar datos de posición de los agentes
 agent_positions = {}
 agent_states = {}
+peaton_states = {}
 
 #Routes--------------------------------------------
 @app.route('/update_positions', methods=['POST'])
@@ -34,13 +35,13 @@ def get_states():
 @app.route('/update_positionsCompas', methods=['POST'])
 def update_postionsCompas():
     data = request.json
-    agent_states.update(data)
+    peaton_states.update(data)
     return jsonify({"status": "success State"})
 
 @app.route('/agent_postionsCompas', methods=['GET'])
 def get_positionsCompas():
     # Convertir el diccionario en una lista de objetos para que Unity pueda procesarlo
-    states_list = [{"id": key, "position": value} for key, value in agent_states.items()]
+    states_list = [{"id": key, "position": value} for key, value in peaton_states.items()]
     return jsonify(states_list)
 
 @app.route('/update_positionsHelado', methods=['POST'])
