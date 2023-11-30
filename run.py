@@ -10,8 +10,10 @@ from traffic_model import (
     CarAgent,
 )
 
+
 def get_choques(model):
     return f"Personas atropelladas: {model.chocados}"
+
 
 def agent_portrayal(agent):
     portrayal = {}
@@ -72,19 +74,20 @@ def agent_portrayal(agent):
 
     return portrayal
 
+
 choques_chart = mesa.visualization.ChartModule([{"Label": "chocados", "Color": "Red"}])
 
 grid = mesa.visualization.CanvasGrid(agent_portrayal, 30, 30)
 server = mesa.visualization.ModularServer(
     TrafficModel,
-    [grid,
-     get_choques,
-     choques_chart
-     ],
+    [grid, get_choques, choques_chart],
     "Car Model",
-    {"width": 30,
-     "height": 30,
-     "num_agents": mesa.visualization.Slider("Numero de Peatones", 20, 0, 100, 2),},
+    {
+        "width": 30,
+        "height": 30,
+        "num_peatones": mesa.visualization.Slider("Numero de Peatones", 20, 0, 100, 2),
+        "num_autos": mesa.visualization.Slider("Numero de autos", 10, 0, 30, 2),
+    },
 )
 server.port = 8521  # the default
 server.launch()
